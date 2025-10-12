@@ -1,0 +1,51 @@
+# Virtual environment
+venv/
+ENV/
+env/
+
+# Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+
+# Environment variables
+.env
+
+# Database files (if any local SQLite testing)
+*.db
+*.sqlite3
+
+# Logs and temp files
+*.log
+*.pot
+*.mo
+*.pid
+*.seed
+*.out
+*.bak
+*.swp
+.DS_Store
+
+# IDE / Editor settings
+.vscode/
+.idea/
+*.code-workspace
+
+# OS-specific files
+Thumbs.db
+desktop.ini
+
+# Flask instance folder (if used)
+instance/
+
+# Pytest / coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Build / distribution files
+build/
+dist/
+*.egg-info/
