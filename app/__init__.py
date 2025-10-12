@@ -1,12 +1,12 @@
 from flask import Flask
-from app.utils.db import connect_db
+from app.utils.db import get_db_connection
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object('config.Config')
 
     # Initialize DB
-    connect_db(app)
+    get_db_connection(app)
 
     # Import routes
     from app.routes.auth_routes import auth_bp
