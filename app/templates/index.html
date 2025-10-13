@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Home | Gatherly{% endblock %}
+
+{% block content %}
+<div class="text-center mt-12">
+    <h1 class="text-4xl font-bold text-blue-700">Welcome to Gatherly 🎉</h1>
+    <p class="text-gray-700 mt-3">Create events, connect socially, and manage everything in one place.</p>
+
+    {% if not session.username %}
+        <a href="/register" class="inline-block mt-6 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">
+            Get Started
+        </a>
+    {% else %}
+        <a href="/dashboard" class="inline-block mt-6 bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700">
+            Go to Dashboard
+        </a>
+    {% endif %}
+</div>
+
+<!-- Combined Feed -->
+<div class="max-w-3xl mx-auto mt-12 space-y-6">
+  <h2 class="text-2xl font-semibold text-gray-800 text-center">Latest Posts & Events</h2>
+
+  {% if feed %}
+    {% for item in feed %}
+      <div class="bg-white p-5 rounded-lg shadow">
+        {% if item.type == 'post' %}
+          <h3 class="text-xl font-bold text-blue-700">📝 {{ item.title }}</h3>
+          <p class="text-gray-600 mt-2">{{ item.content[:200] }}{% if item.content|length > 200 %}...{% endif %}</p>
+        {% elif item.type == 'event' %}
+          <h3 class="text-xl font-bold text-green-700">🎉 {{ item.title }}</h3>
+          <p class="text-gray-600 mt-2">{{ item.description[:200] }}{% if item.description|length > 200 %}...{% endif %}</p>
+          <p class="text-sm text-gray-500 mt-1">📅 {{ item.date.strftime("%b %d, %Y") }}</p>
+        {% endif %}
+        <p class="text-sm text-gray-400 mt-2">By {{ item.author }} | {{ item.created_at.strftime("%b %d, %Y") }}</p>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-gray-500 text-center mt-6">No posts or events yet. Be the first to share!</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Events | Gatherly{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-bold text-blue-600 mb-4 text-center">Upcoming Events</h2>
+
+<div class="max-w-3xl mx-auto space-y-4">
+    {% for event in events %}
+        <div class="bg-white shadow-md rounded-lg p-4">
+            <h3 class="text-xl font-semibold">{{ event[1] }}</h3>
+            <p class="text-gray-700">{{ event[2] }}</p>
+            <p class="text-gray-500 text-sm">Date: {{ event[3] }} | Location: {{ event[4] }}</p>
+        </div>
+    {% else %}
+        <p class="text-center text-gray-500">No events yet. <a href="/events/create" class="text-blue-600">Create one</a>.</p>
+    {% endfor %}
+</div>
+{% endblock %}
