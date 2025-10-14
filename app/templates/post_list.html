@@ -9,9 +9,103 @@
         <div class="bg-white shadow-md rounded-lg p-4">
             <p class="text-gray-800">{{ post[2] }}</p>
             <p class="text-gray-500 text-sm mt-2">by {{ post[1] }} | {{ post[3] }}</p>
+
+            <!-- Like -->
+            <button class="like-btn text-blue-500 hover:text-blue-700 mt-2" data-post-id="{{ post[0] }}">❤️ Like</button>
+            <span>❤️ {{ post[5] }} Likes</span>
+
+            <!-- Comment Form -->
+            <form class="comment-form mt-3" data-post-id="{{ post[0] }}">
+                <input type="text" name="comment" placeholder="Write a comment..."
+                    class="border rounded-md w-full p-2 focus:outline-none focus:ring focus:ring-blue-300" required>
+                <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded-md mt-2 hover:bg-blue-700">
+                    💬 Comment
+                </button>
+            </form>
+
+            <!-- Comments Section -->
+            <div class="comments mt-3 text-sm text-gray-700 border-t pt-2">
+                {% for comment in post[4] %}
+                    <p class="mt-1"><strong>{{ comment[0] }}:</strong> {{ comment[1] }}</p>
+                {% else %}
+                    <p class="text-gray-400 italic">No comments yet.</p>
+                {% endfor %}
+            </div>
+
         </div>
     {% else %}
         <p class="text-center text-gray-500">No posts yet. <a href="/posts/create" class="text-blue-600">Create one</a>.</p>
     {% endfor %}
 </div>
+
+<!-- ✅ JS must be inside the block -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Like button handler ---
+    document.querySelectorAll('.like-btn').forEach(button => {
+        button.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const postId = button.dataset.postId;
+
+            const res = await fetch(`/api/posts/${postId}/like`, { method: 'POST' });
+            if (res.status === 401) {
+                showFlash("⚠️ Please log in or register to like posts.", "warning");
+                return;
+            }
+
+            const data = await res.json();
+            if (data.likes !== undefined) {
+                button.nextElementSibling.textContent = `❤️ ${data.likes} Likes`;
+            }
+        });
+    });
+
+    // --- Comment form handler ---
+    document.querySelectorAll('.comment-form').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const postId = form.dataset.postId;
+            const input = form.querySelector('input[name="comment"]');
+            const comment = input.value.trim();
+            if (!comment) return;
+
+            const res = await fetch(`/api/posts/${postId}/comment`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ comment })
+            });
+
+            if (res.status === 401) {
+                showFlash("⚠️ Please log in or register to comment.", "warning");
+                return;
+            }
+
+            const data = await res.json();
+            if (data.username) {
+                const commentList = form.parentElement.querySelector('.comments');
+                const newComment = document.createElement('p');
+                newComment.innerHTML = `<strong>${data.username}:</strong> ${data.content}`;
+                commentList.appendChild(newComment);
+                input.value = '';
+            }
+        });
+    });
+
+    // --- Helper: show temporary flash message ---
+    function showFlash(message, type = "info") {
+        const flashDiv = document.createElement('div');
+        flashDiv.className = `p-3 mb-3 rounded-lg text-center 
+            ${type === "warning" ? "bg-yellow-100 text-yellow-800" : 
+             type === "danger" ? "bg-red-100 text-red-800" :
+             "bg-blue-100 text-blue-800"}`;
+        flashDiv.textContent = message;
+
+        document.body.prepend(flashDiv);
+        setTimeout(() => flashDiv.remove(), 3000);
+    }
+
+});
+
+</script>
 {% endblock %}
