@@ -1,45 +1,91 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="max-w-6xl mx-auto px-4 py-10">
 
-<div class="max-w-6xl mx-auto px-4 mt-12">
-  <!-- Profile Header -->
-  <div class="bg-white rounded-2xl shadow p-6 flex flex-col md:flex-row items-center md:items-start md:space-x-6">
-    <!-- Profile Image -->
-    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200">
-      <img src="{{ user.profile_image or url_for('static', filename='images/default-avatar.png') }}" alt="{{ user.username }}" class="w-full h-full object-cover">
-    </div>
-
-    <!-- User Info -->
-    <div class="flex-1 mt-4 md:mt-0 text-center md:text-left">
-      <h1 class="text-2xl font-semibold text-gray-800">{{ session.username }}</h1>
-      
-      <p class="text-gray-500">{{ session.email }}</p>
-      
-      {% if user.bio %}
-      <p class="text-gray-600 mt-2">{{ user.bio }}</p>
-      {% endif %}
-      
-      <!-- Stats -->
-      <div class="flex justify-center md:justify-start space-x-6 mt-4 text-gray-700">
-        <div>
-          <span class="font-semibold">{{ posts|length }}</span>
-          <span class="text-sm">Posts</span>
+  <!-- User Info Card -->
+  <div class="bg-white rounded-xl shadow-md p-6 mb-10">
+    <div class="flex items-center justify-between">
+      <!-- Left: Avatar + Details -->
+      <div class="flex items-center space-x-6">
+        <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center text-3xl font-semibold text-gray-600">
+          {{ user[1][0]|upper }}
         </div>
         <div>
-          <span class="font-semibold">{{ events|length }}</span>
-          <span class="text-sm">Events</span>
-        </div>
-        <div>
-          <span class="font-semibold">{{ user.followers|length if user.followers else 0 }}</span>
-          <span class="text-sm">Followers</span>
+          <h2 class="text-2xl font-bold text-gray-800">{{ user[1] }}</h2>
+          <p class="text-gray-500">{{ user[2] }}</p>
+
+          <!-- Follower Stats -->
+          <div class="flex space-x-6 mt-3">
+            <p class="text-sm text-gray-600">
+              <span class="font-semibold text-gray-800">{{ followers_count }}</span> Followers
+            </p>
+            <p class="text-sm text-gray-600">
+              <span class="font-semibold text-gray-800">{{ following_count }}</span> Following
+            </p>
+          </div>
         </div>
       </div>
 
-      <!-- Action Buttons -->
-    
-
-  
+      <!-- Right: Follow/Unfollow Button -->
+      {% if session.user_id != user[0] %}
+        <form method="POST" action="{{ url_for('user.unfollow' if is_following else 'user.follow', user_id=user[0]) }}">
+          <button type="submit"
+            class="px-5 py-2 rounded-lg text-sm font-semibold 
+                   {% if is_following %}
+                     bg-gray-200 text-gray-700 hover:bg-gray-300
+                   {% else %}
+                     bg-blue-600 text-white hover:bg-blue-700
+                   {% endif %}">
+            {% if is_following %}Unfollow{% else %}Follow{% endif %}
+          </button>
+        </form>
+      {% endif %}
+    </div>
   </div>
-</div>
 
+  <!-- Posts Section -->
+  <div class="mb-10">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-semibold text-gray-700">Posts</h3>
+      <a href="#" class="text-sm text-blue-500 hover:underline">View all</a>
+    </div>
+
+    {% if posts %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for post in posts %}
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <h4 class="font-semibold text-gray-800 mb-2">Post #{{ post[0] }}</h4>
+          <p class="text-gray-600 text-sm mb-3">{{ post[2][:120] }}...</p>
+          <p class="text-xs text-gray-400">Created: {{ post[3].strftime('%b %d, %Y') }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-gray-500 text-sm">No posts yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Events Section -->
+  <div>
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-semibold text-gray-700">Events</h3>
+      <a href="#" class="text-sm text-blue-500 hover:underline">View all</a>
+    </div>
+
+    {% if events %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for event in events %}
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <h4 class="font-semibold text-gray-800">{{ event[2] }}</h4>
+          <p class="text-gray-600 text-sm mb-2">{{ event[3][:120] }}...</p>
+          <p class="text-xs text-gray-400">Date: {{ event[4].strftime('%b %d, %Y') }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-gray-500 text-sm">No events yet.</p>
+    {% endif %}
+  </div>
+
+</div>
 {% endblock %}

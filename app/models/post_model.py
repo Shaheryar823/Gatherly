@@ -24,7 +24,7 @@ class PostModel:
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute("""
-            SELECT posts.id, users.username, posts.content, posts.created_at
+            SELECT posts.id, users.username, posts.content, posts.created_at, posts.user_id
             FROM posts
             JOIN users ON posts.user_id = users.id
             ORDER BY posts.created_at DESC

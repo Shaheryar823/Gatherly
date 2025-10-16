@@ -59,6 +59,17 @@ def create_tables():
             UNIQUE (user_id, post_id)  -- prevents double likes
         );
     """)
+    
+    # Followers Table
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS followers (
+            id SERIAL PRIMARY KEY,
+            follower_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            followed_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            created_at TIMESTAMP DEFAULT NOW(),
+            UNIQUE (follower_id, followed_id)
+        );
+    """)
 
 
     conn.commit()
