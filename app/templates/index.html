@@ -6,37 +6,76 @@
     <h1 class="text-4xl font-bold text-blue-700">Welcome to Gatherly 🎉</h1>
     <p class="text-gray-700 mt-3">Create events, connect socially, and manage everything in one place.</p>
 
+    <!-- Dashboard or Register Button -->
     {% if not session.username %}
-        <a href="/register" class="inline-block mt-6 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">
+        <a href="/register" class="inline-block mt-8 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">
             Get Started
         </a>
     {% else %}
-        <a href="/dashboard" class="inline-block mt-6 bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700">
+        <a href="/dashboard" class="inline-block mt-8 bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition">
             Go to Dashboard
         </a>
     {% endif %}
-</div>
 
-<!-- Combined Feed -->
-<div class="max-w-3xl mx-auto mt-12 space-y-6">
-  <h2 class="text-2xl font-semibold text-gray-800 text-center">Latest Posts & Events</h2>
+    <!-- Dashboard Boxes Section -->
+    <div class="max-w-6xl mx-auto mt-16 mb-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4">
 
-  {% if feed %}
-    {% for item in feed %}
-      <div class="bg-white p-5 rounded-lg shadow">
-        {% if item.type == 'post' %}
-          <h3 class="text-xl font-bold text-blue-700">📝 {{ item.title }}</h3>
-          <p class="text-gray-600 mt-2">{{ item.content[:200] }}{% if item.content|length > 200 %}...{% endif %}</p>
-        {% elif item.type == 'event' %}
-          <h3 class="text-xl font-bold text-green-700">🎉 {{ item.title }}</h3>
-          <p class="text-gray-600 mt-2">{{ item.description[:200] }}{% if item.description|length > 200 %}...{% endif %}</p>
-          <p class="text-sm text-gray-500 mt-1">📅 {{ item.date.strftime("%b %d, %Y") }}</p>
-        {% endif %}
-        <p class="text-sm text-gray-400 mt-2">By {{ item.author }} | {{ item.created_at.strftime("%b %d, %Y") }}</p>
-      </div>
-    {% endfor %}
-  {% else %}
-    <p class="text-gray-500 text-center mt-6">No posts or events yet. Be the first to share!</p>
-  {% endif %}
+        <!-- Posts -->
+        <div class="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-lg transition">
+            <h2 class="text-xl font-semibold text-blue-700 mb-2">Posts</h2>
+            <p class="text-gray-600 mb-4">See what people are sharing.</p>
+            <a href="/posts" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">See Posts</a>
+        </div>
+
+        <!-- Events -->
+        <div class="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-lg transition">
+            <h2 class="text-xl font-semibold text-green-700 mb-2">Events</h2>
+            <p class="text-gray-600 mb-4">Discover upcoming gatherings.</p>
+            <a href="/events" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">See Events</a>
+        </div>
+
+        <!-- Messages -->
+        <div class="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-lg transition">
+            <h2 class="text-xl font-semibold text-purple-700 mb-2">Messages</h2>
+            <p class="text-gray-600 mb-4">Stay connected with friends.</p>
+            <a href="#" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Open Chat</a>
+        </div>
+
+        <!-- Friends -->
+        <div class="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-lg transition">
+            <h2 class="text-xl font-semibold text-pink-700 mb-2">Friends</h2>
+            <p class="text-gray-600 mb-4">View your connections and requests.</p>
+            <a href="#" class="bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700">See Friends</a>
+        </div>
+
+        <!-- News -->
+        <div class="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-lg transition">
+            <h2 class="text-xl font-semibold text-yellow-600 mb-2">News</h2>
+            <p class="text-gray-600 mb-4">Stay informed and connected.</p>
+            <a href="#" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">View News</a>
+        </div>
+
+        <!-- Weather -->
+        <div class="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-lg transition">
+            <h2 class="text-xl font-semibold text-sky-700 mb-2">Weather</h2>
+            <p class="text-gray-600 mb-4">Check today’s forecast.</p>
+            <a href="#" class="bg-sky-600 text-white px-4 py-2 rounded-md hover:bg-sky-700">Check Weather</a>
+        </div>
+
+        <!-- Explore -->
+        <div class="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-lg transition">
+            <h2 class="text-xl font-semibold text-indigo-700 mb-2">Explore</h2>
+            <p class="text-gray-600 mb-4">Discover new people and pages.</p>
+            <a href="#" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Start Exploring</a>
+        </div>
+
+        <!-- Notifications -->
+        <div class="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-lg transition">
+            <h2 class="text-xl font-semibold text-red-700 mb-2">Notifications</h2>
+            <p class="text-gray-600 mb-4">Stay updated on new activity.</p>
+            <a href="#" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">View Alerts</a>
+        </div>
+
+    </div>
 </div>
 {% endblock %}

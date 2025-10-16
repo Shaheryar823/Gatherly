@@ -26,7 +26,7 @@
             <a href="/dashboard" class="hover:underline">Dashboard</a>
             <a href="/posts/create" class="hover:underline">New Post</a>
             <a href="/events/create" class="hover:underline">New Event</a>
-            <span class="font-medium">Hi, {{ session.username }}</span>
+            <a href="/profile/{{session.user_id}}" class="hover:underline"><span class="font-medium">Hi, {{ session.username }}</span></a>
             <a href="/logout" class="hover:underline">Logout</a>
         {% else %}
             <a href="/login" class="hover:underline">Login</a>

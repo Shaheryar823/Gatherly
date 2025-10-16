@@ -1,9 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from app.utils.db import get_db_connection
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
+from app.models.post_model import PostModel
+from app.utils.db import get_db_connection  # still used for comments/likes
 
 social_bp = Blueprint('social', __name__)
 
-# Create a new post
+# ----------------------------
+# 📝 Create a Post
+# ----------------------------
 @social_bp.route('/posts/create', methods=['GET', 'POST'])
 def create_post():
     if 'user_id' not in session:
@@ -12,41 +15,25 @@ def create_post():
 
     if request.method == 'POST':
         content = request.form['content']
-        user_id = session['user_id']
+        success = PostModel.create_post(session['user_id'], content)
 
-        conn = get_db_connection()
-        cur = conn.cursor()
-        try:
-            cur.execute(
-                "INSERT INTO posts (user_id, content) VALUES (%s, %s)",
-                (user_id, content)
-            )
-            conn.commit()
+        if success:
             flash("Post created successfully!", "success")
-            return redirect(url_for('social.view_posts'))
-        except Exception as e:
-            conn.rollback()
+            return redirect(url_for('main.dashboard'))
+        else:
             flash("Error creating post.", "danger")
-        finally:
-            cur.close()
-            conn.close()
 
     return render_template('post_create.html')
 
-# View all posts (feed)
+
+# ----------------------------
+# 📜 View All Posts
+# ----------------------------
 @social_bp.route('/posts')
 def view_posts():
+    posts = PostModel.get_all_posts()
     conn = get_db_connection()
     cur = conn.cursor()
-
-    # Fetch posts
-    cur.execute("""
-        SELECT posts.id, users.username, posts.content, posts.created_at
-        FROM posts
-        JOIN users ON posts.user_id = users.id
-        ORDER BY posts.created_at DESC
-    """)
-    posts = cur.fetchall()
 
     full_posts = []
     for post in posts:
@@ -70,64 +57,48 @@ def view_posts():
 
     cur.close()
     conn.close()
-
     return render_template('post_list.html', posts=full_posts)
 
 
-# Edit Post
+# ----------------------------
+# ✏️ Edit Post
+# ----------------------------
 @social_bp.route('/posts/edit/<int:post_id>', methods=['GET', 'POST'])
 def edit_post(post_id):
     if 'user_id' not in session:
         flash("You must be logged in.", "danger")
         return redirect(url_for('auth.login'))
 
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM posts WHERE id=%s AND user_id=%s", (post_id, session['user_id']))
-    post = cur.fetchone()
-
+    post = PostModel.get_post_by_id(post_id, session['user_id'])
     if not post:
         flash("Post not found or unauthorized.", "danger")
-        cur.close()
-        conn.close()
         return redirect(url_for('social.view_posts'))
 
     if request.method == 'POST':
         content = request.form['content']
-        try:
-            cur.execute("UPDATE posts SET content=%s WHERE id=%s", (content, post_id))
-            conn.commit()
+        success = PostModel.update_post(post_id, content)
+        if success:
             flash("Post updated successfully!", "success")
-            return redirect(url_for('social.view_posts'))
-        except:
-            conn.rollback()
+            return redirect(url_for('main.dashboard'))
+        else:
             flash("Error updating post.", "danger")
-    cur.close()
-    conn.close()
 
     return render_template('post_create.html', post=post)
 
-# Delete Post
+
+# ----------------------------
+# 🗑️ Delete Post
+# ----------------------------
 @social_bp.route('/posts/delete/<int:post_id>')
 def delete_post(post_id):
     if 'user_id' not in session:
         flash("You must be logged in.", "danger")
         return redirect(url_for('auth.login'))
 
-    conn = get_db_connection()
-    cur = conn.cursor()
-    try:
-        cur.execute("DELETE FROM posts WHERE id=%s AND user_id=%s", (post_id, session['user_id']))
-        conn.commit()
-        flash("Post deleted successfully!", "success")
-    except:
-        conn.rollback()
-        flash("Error deleting post.", "danger")
-    finally:
-        cur.close()
-        conn.close()
+    success = PostModel.delete_post(post_id, session['user_id'])
+    flash("Post deleted successfully!" if success else "Error deleting post.", "success" if success else "danger")
+    return redirect(url_for('main.dashboard'))
 
-    return redirect(url_for('social.view_posts'))
 
 
 # ----------------------------

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-6xl mx-auto px-4 mt-12">
+  <!-- Profile Header -->
+  <div class="bg-white rounded-2xl shadow p-6 flex flex-col md:flex-row items-center md:items-start md:space-x-6">
+    <!-- Profile Image -->
+    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200">
+      <img src="{{ user.profile_image or url_for('static', filename='images/default-avatar.png') }}" alt="{{ user.username }}" class="w-full h-full object-cover">
+    </div>
+
+    <!-- User Info -->
+    <div class="flex-1 mt-4 md:mt-0 text-center md:text-left">
+      <h1 class="text-2xl font-semibold text-gray-800">{{ session.username }}</h1>
+      
+      <p class="text-gray-500">{{ session.email }}</p>
+      
+      {% if user.bio %}
+      <p class="text-gray-600 mt-2">{{ user.bio }}</p>
+      {% endif %}
+      
+      <!-- Stats -->
+      <div class="flex justify-center md:justify-start space-x-6 mt-4 text-gray-700">
+        <div>
+          <span class="font-semibold">{{ posts|length }}</span>
+          <span class="text-sm">Posts</span>
+        </div>
+        <div>
+          <span class="font-semibold">{{ events|length }}</span>
+          <span class="text-sm">Events</span>
+        </div>
+        <div>
+          <span class="font-semibold">{{ user.followers|length if user.followers else 0 }}</span>
+          <span class="text-sm">Followers</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+    
+
+  
+  </div>
+</div>
+
+{% endblock %}

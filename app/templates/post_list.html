@@ -7,26 +7,34 @@
 <div class="max-w-3xl mx-auto space-y-4">
     {% for post in posts %}
         <div class="post bg-white shadow-md rounded-lg p-4">
-            <p class="text-gray-800">{{ post[2] }}</p>
-            <p class="text-gray-500 text-sm mt-2">by {{ post[1] }} | {{ post[3] }}</p>
+            <!-- Post Header -->
+            <div class="flex items-center justify-between mb-2">
+                <p class="font-semibold text-blue-700">{{ post[1] }}</p>
+                <span class="text-gray-400 text-sm">{{ post[3] }}</span>
+            </div>
+
+            <!-- Post Content -->
+            <p class="text-gray-800 mb-3">{{ post[2] }}</p>
 
             <!-- Like -->
             <button class="like-btn text-blue-500 hover:text-blue-700 mt-2" data-post-id="{{ post[0] }}">❤️ Like</button>
             <span>❤️ {{ post[5] }} Likes</span>
 
             <!-- Comment Form -->
-            <form class="comment-form mt-3" data-post-id="{{ post[0] }}">
+             <!-- Comment Form -->
+            <form class="comment-form mt-3 flex items-center space-x-2" data-post-id="{{ post[0] }}">
                 <input type="text" name="comment" placeholder="Write a comment..."
-                    class="border rounded-md w-full p-2 focus:outline-none focus:ring focus:ring-blue-300" required>
-                <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded-md mt-2 hover:bg-blue-700">
-                    💬 Comment
+                    class="border border-gray-300 rounded-md w-full p-2 focus:outline-none focus:ring focus:ring-blue-200 text-sm"
+                    required>
+                <button type="submit" class="bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700">
+                    💬
                 </button>
             </form>
 
             <!-- Comments Section -->
             <div class="comments mt-3 text-sm text-gray-700 border-t pt-2">
                 {% for comment in post[4] %}
-                    <p class="mt-1"><strong>{{ comment[0] }}:</strong> {{ comment[1] }}</p>
+                    <p class="text-gray-800 mb-3"><strong>{{ comment[0] }}:</strong> {{ comment[1] }}</p>
                 {% else %}
                     <p class="text-gray-400 italic">No comments yet.</p>
                 {% endfor %}

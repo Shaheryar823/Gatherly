@@ -1,16 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Gatherly Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 font-sans text-gray-800">
+{% extends "base.html" %}
+{% block title %}Dashboard | Gatherly{% endblock %}
+
+{% block content %}
+
     <div class="max-w-5xl mx-auto p-6">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-blue-700">Welcome to Gatherly 🎉</h1>
-            <a href="{{ url_for('auth.logout') }}" class="text-red-500 hover:underline">Logout</a>
-        </div>
+        <h2 class="text-2xl font-bold text-blue-600 mb-6 text-center">Your Dashboard</h2>
+
 
         <!-- Create Buttons -->
         <div class="flex gap-4 mb-8">
@@ -71,5 +66,4 @@
             {% endif %}
         </section>
     </div>
-</body>
-</html>
+{% endblock %}
